@@ -17,10 +17,15 @@ func main() {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
 
+	sum := 0
+
 	for scanner.Scan() {
 		digits := getDigits(scanner.Text())
 		fmt.Println(digits)
+		sum += digits
 	}
+
+	fmt.Println(sum)
 }
 
 // finds the first and last digit of a string
