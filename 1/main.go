@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type void struct{}
@@ -20,16 +22,40 @@ func main() {
 	scanner.Split(bufio.ScanLines)
 
 	sum := 0
-
+	timeStart := time.Now()
 	for scanner.Scan() {
 		// digits := getDigits(scanner.Text())
-		fmt.Println("-----")
+		// fmt.Println("-----")
 		digits := getValidDigits(scanner.Text())
-		fmt.Println(digits)
+		// fmt.Println(digits)
 		sum += digits
 	}
 
 	fmt.Println(sum)
+	timeEnd := time.Now()
+	fmt.Println("MINE:", timeEnd.Sub(timeStart))
+
+	timeStart = time.Now()
+	otherSolution()
+	timeEnd = time.Now()
+	fmt.Println("OTHER:", timeEnd.Sub(timeStart))
+}
+
+func otherSolution() {
+	input, _ := os.ReadFile("input.txt")
+
+	calc := func(r *strings.Replacer) (result int) {
+		for _, s := range strings.Fields(string(input)) {
+			s = r.Replace(r.Replace(s))
+			result += 10 * int(s[strings.IndexAny(s, "123456789")]-'0')
+			result += int(s[strings.LastIndexAny(s, "123456789")] - '0')
+		}
+		return
+	}
+
+	fmt.Println(calc(strings.NewReplacer()))
+	fmt.Println(calc(strings.NewReplacer("one", "o1e", "two", "t2o", "three", "t3e", "four",
+		"f4r", "five", "f5e", "six", "s6x", "seven", "s7n", "eight", "e8t", "nine", "n9e")))
 }
 
 // first solution
@@ -152,6 +178,6 @@ func getDigitsArray(s string) []int {
 		right = left
 	}
 
-	fmt.Println(result)
+	// fmt.Println(result)
 	return result
 }
