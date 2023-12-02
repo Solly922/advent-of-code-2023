@@ -10,7 +10,7 @@ import (
 type void struct{}
 
 func main() {
-	file, err := os.Open("practice.txt")
+	file, err := os.Open("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -23,6 +23,7 @@ func main() {
 
 	for scanner.Scan() {
 		// digits := getDigits(scanner.Text())
+		fmt.Println("-----")
 		digits := getValidDigits(scanner.Text())
 		fmt.Println(digits)
 		sum += digits
@@ -67,8 +68,21 @@ func getDigits(s string) int {
 // second solution
 // finds the first and last digit of a string, but spelled out numbers count
 func getValidDigits(s string) int {
-	var v void
 	var resultString string
+	arr := getDigitsArray(s)
+	resultString += strconv.Itoa(arr[0])
+	resultString += strconv.Itoa(arr[len(arr)-1])
+
+	result, err := strconv.Atoi(resultString)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+
+func getDigitsArray(s string) []int {
+	var result []int
+	var v void
 	var spelledNumbers = map[string]int{
 		"one":   1,
 		"two":   2,
@@ -80,48 +94,49 @@ func getValidDigits(s string) int {
 		"eight": 8,
 		"nine":  9,
 	}
-	keys := make([]string, len(spelledNumbers))
-	for k, val := range spelledNumbers {
-		keys[val-1] = k
-	}
 	left, right := 0, 0
+	// fmt.Println(s)
 
 	for left < len(s) {
 		letter := s[left]
+		var currString string
+		// fmt.Println("result", result)
+		// fmt.Println("left", string(letter))
 		isDigit := letter >= '0' && letter <= '9'
 		if isDigit {
-			resultString += string(letter)
-			break
+			digit, err := strconv.Atoi(string(letter))
+			if err != nil {
+				panic(err)
+			}
+			result = append(result, digit)
+			left++
+			right = left
+			continue
 		}
 
-		set := make(map[string]void)
+		set := make(map[string]void) // set of possible numbers
+		// fill set
+		for key := range spelledNumbers {
+			set[key] = v
+		}
+
 		for right < len(s) {
 			letter := s[right]
 			position := right - left
+			currString += string(letter)
 
-			if len(set) == 1 {
-				ok := false
-				var val int
-				for key := range set {
-					val, ok = spelledNumbers[key]
-					break
-				}
-
-				if ok {
-					resultString += strconv.Itoa(val)
-					break
-				}
+			if _, ok := set[currString]; ok {
+				result = append(result, spelledNumbers[currString])
+				break
 			}
 
-			for _, key := range keys {
+			for key := range set {
 				if position > len(key)-1 {
 					delete(set, key)
 					continue
 				}
 
-				if key[position] == letter {
-					set[key] = v
-				} else {
+				if key[position] != letter {
 					delete(set, key)
 				}
 			}
@@ -132,73 +147,11 @@ func getValidDigits(s string) int {
 
 			right++
 		}
-		if len(resultString) > 0 {
-			break
-		}
 
 		left++
 		right = left
 	}
 
-	left, right = len(s)-1, len(s)-1
-	for left >= 0 {
-		letter := s[left]
-		isDigit := letter >= '0' && letter <= '9'
-		if isDigit {
-			resultString += string(letter)
-			break
-		}
-
-		set := make(map[string]void)
-		for right >= 0 {
-			letter := s[right]
-			position := right - left
-
-			if len(set) == 1 {
-				ok := false
-				var val int
-				for key := range set {
-					val, ok = spelledNumbers[key]
-					break
-				}
-
-				if ok {
-					resultString += strconv.Itoa(val)
-					break
-				}
-			}
-
-			for _, key := range keys {
-				if position > len(key)-1 {
-					delete(set, key)
-					continue
-				}
-
-				if key[position] == letter {
-					set[key] = v
-				} else {
-					delete(set, key)
-				}
-			}
-
-			if len(set) == 0 {
-				break
-			}
-
-			right--
-		}
-		if len(resultString) > 1 {
-			break
-		}
-
-		left--
-		right = left
-	}
-
-	digits, err := strconv.Atoi(resultString)
-	if err != nil {
-		panic(err)
-	}
-
-	return digits
+	fmt.Println(result)
+	return result
 }
