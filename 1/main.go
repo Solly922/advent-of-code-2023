@@ -140,6 +140,61 @@ func getValidDigits(s string) int {
 		right = left
 	}
 
+	left, right = len(s)-1, len(s)-1
+	for left >= 0 {
+		letter := s[left]
+		isDigit := letter >= '0' && letter <= '9'
+		if isDigit {
+			resultString += string(letter)
+			break
+		}
+
+		set := make(map[string]void)
+		for right >= 0 {
+			letter := s[right]
+			position := right - left
+
+			if len(set) == 1 {
+				ok := false
+				var val int
+				for key := range set {
+					val, ok = spelledNumbers[key]
+					break
+				}
+
+				if ok {
+					resultString += strconv.Itoa(val)
+					break
+				}
+			}
+
+			for _, key := range keys {
+				if position > len(key)-1 {
+					delete(set, key)
+					continue
+				}
+
+				if key[position] == letter {
+					set[key] = v
+				} else {
+					delete(set, key)
+				}
+			}
+
+			if len(set) == 0 {
+				break
+			}
+
+			right--
+		}
+		if len(resultString) > 1 {
+			break
+		}
+
+		left--
+		right = left
+	}
+
 	digits, err := strconv.Atoi(resultString)
 	if err != nil {
 		panic(err)
