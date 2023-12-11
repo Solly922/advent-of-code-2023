@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -15,9 +16,12 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 
+	startTime := time.Now()
 	m, ins, start, dest := buildMap(scanner)
 	// fmt.Println(m, ins)
 	steps := countSteps(m, ins, start, dest)
+	endTime := time.Now()
+	fmt.Println("Time taken:", endTime.Sub(startTime))
 	fmt.Println(steps)
 }
 
@@ -53,7 +57,7 @@ func buildMap(s *bufio.Scanner) (quest map[string][2]string, instructions string
 func countSteps(m map[string][2]string, ins string, start string, dest string) int {
 	end := false
 	steps := 0
-	node := start
+	node := "AAA"
 	if ins == "" {
 		fmt.Println("No instructions")
 		return 0
@@ -66,8 +70,8 @@ func countSteps(m map[string][2]string, ins string, start string, dest string) i
 			end = true
 		}
 		for _, v := range ins {
-			fmt.Println(node, string(v))
-			if node == dest {
+			// fmt.Println(node, string(v))
+			if node == "ZZZ" {
 				return steps
 			}
 
