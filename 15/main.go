@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	file, err := os.ReadFile("input.txt")
+	file, err := os.ReadFile("test1.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -16,6 +16,8 @@ func main() {
 
 	sum := sumHashes(codes)
 	fmt.Println(sum)
+
+	placeInBoxes(codes)
 }
 
 func hashCode(code string) int {
@@ -27,6 +29,7 @@ func hashCode(code string) int {
 		result = result % 256
 	}
 
+	fmt.Println(result)
 	return result
 }
 
@@ -38,4 +41,32 @@ func sumHashes(codes []string) int {
 	}
 
 	return result
+}
+
+func placeInBoxes(codes []string) map[int][][2]string {
+	result := make(map[int][][2]string)
+
+	for _, code := range codes {
+		split := strings.Split(code, "=")
+		op := "="
+		if len(split) == 1 {
+			split = strings.Split(code, "-")
+			op = "-"
+		}
+
+		boxNum := hashCode(split[0])
+		fmt.Println(boxNum, op)
+	}
+
+	return result
+}
+
+func containsLabel(arr [][2]string, label string) (bool, int) {
+	for i, a := range arr {
+		if a[0] == label {
+			return true, i
+		}
+	}
+
+	return false, -1
 }
