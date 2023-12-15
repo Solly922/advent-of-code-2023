@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file, err := os.Open("test2.txt")
+	file, err := os.Open("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -25,8 +25,8 @@ func main() {
 	fmt.Println(steps)
 
 	startTime = time.Now()
-	aNodes := getANodes(m)
-	allSteps := countAllSteps(m, ins, aNodes)
+	aNodes := getANodes(&m)
+	allSteps := countAllSteps(&m, ins, aNodes)
 	lcm := lowestCommonMultiple(allSteps)
 	endTime = time.Now()
 	fmt.Println(lcm)
@@ -96,10 +96,10 @@ func countSteps(m map[string][2]string, ins string, start string, dest string) i
 	return steps
 }
 
-func getANodes(m map[string][2]string) []string {
+func getANodes(m *map[string][2]string) []string {
 	var result []string
 
-	for k, _ := range m {
+	for k := range *m {
 		if k[2] == 'A' {
 			result = append(result, k)
 		}
@@ -108,7 +108,7 @@ func getANodes(m map[string][2]string) []string {
 	return result
 }
 
-func countStepsModif(m map[string][2]string, ins string, start string) int {
+func countStepsModif(m *map[string][2]string, ins string, start string) int {
 	end := false
 	steps := 0
 	node := start
@@ -129,10 +129,10 @@ func countStepsModif(m map[string][2]string, ins string, start string) int {
 			}
 
 			if string(v) == "L" {
-				node = m[node][0]
+				node = (*m)[node][0]
 			}
 			if string(v) == "R" {
-				node = m[node][1]
+				node = (*m)[node][1]
 			}
 			steps++
 		}
@@ -141,7 +141,7 @@ func countStepsModif(m map[string][2]string, ins string, start string) int {
 	return steps
 }
 
-func countAllSteps(m map[string][2]string, ins string, aNodes []string) []int {
+func countAllSteps(m *map[string][2]string, ins string, aNodes []string) []int {
 	var result []int
 
 	for _, v := range aNodes {
