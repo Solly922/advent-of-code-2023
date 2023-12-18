@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
 func main() {
-	file, err := os.ReadFile("test1.txt")
+	file, err := os.ReadFile("input.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -19,6 +20,9 @@ func main() {
 
 	boxes := placeInBoxes(codes)
 	fmt.Println(boxes)
+
+	focusingPower := calcTotalFocusPower(boxes)
+	fmt.Println(focusingPower)
 }
 
 func hashCode(code string) int {
@@ -30,7 +34,6 @@ func hashCode(code string) int {
 		result = result % 256
 	}
 
-	fmt.Println(result)
 	return result
 }
 
@@ -69,6 +72,10 @@ func placeInBoxes(codes []string) map[int][][2]string {
 				} else {
 					v = removeLabel(v, i, split[0])
 				}
+			} else {
+				if op == "=" {
+					v = append(v, [2]string{split[0], split[1]})
+				}
 			}
 		}
 		result[boxNum] = v
@@ -95,4 +102,36 @@ func replaceLabel(arr [][2]string, idx int, label string, value string) [][2]str
 func removeLabel(arr [][2]string, idx int, label string) [][2]string {
 	arr = append(arr[:idx], arr[idx+1:]...)
 	return arr
+}
+
+func calcTotalFocusPower(m map[int][][2]string) int {
+	result := 0
+
+	for k, v := range m {
+		power := calcBoxFocusPower(k, v)
+		result += power
+	}
+
+	return result
+}
+
+func calcBoxFocusPower(box int, arr [][2]string) int {
+	result := 0
+	if len(arr) < 1 {
+		return result
+	}
+
+	for i, v := range arr {
+		power := box + 1
+		strength, err := strconv.Atoi(v[1])
+		if err != nil {
+			fmt.Println(box, i, v)
+			panic(err)
+		}
+		power *= ((i + 1) * strength)
+
+		result += power
+	}
+
+	return result
 }
