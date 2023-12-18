@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -13,16 +14,20 @@ func main() {
 		panic(err)
 	}
 
+	start := time.Now()
 	codes := strings.Split(string(file), ",")
 
-	sum := sumHashes(codes)
-	fmt.Println(sum)
+	// sum := sumHashes(codes)
+	// fmt.Println(sum)
 
 	boxes := placeInBoxes(codes)
-	fmt.Println(boxes)
+	// fmt.Println(boxes)
 
 	focusingPower := calcTotalFocusPower(boxes)
+	end := time.Now()
 	fmt.Println(focusingPower)
+
+	fmt.Println("Total time: ", end.Sub(start))
 }
 
 func hashCode(code string) int {
@@ -59,7 +64,7 @@ func placeInBoxes(codes []string) map[int][][2]string {
 		}
 
 		boxNum := hashCode(split[0])
-		fmt.Println(boxNum, op)
+		// fmt.Println(boxNum, op)
 
 		v, ok := result[boxNum]
 		if !ok {
@@ -125,7 +130,7 @@ func calcBoxFocusPower(box int, arr [][2]string) int {
 		power := box + 1
 		strength, err := strconv.Atoi(v[1])
 		if err != nil {
-			fmt.Println(box, i, v)
+			// fmt.Println(box, i, v)
 			panic(err)
 		}
 		power *= ((i + 1) * strength)
